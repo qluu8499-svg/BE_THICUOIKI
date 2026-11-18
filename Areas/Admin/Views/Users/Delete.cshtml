@@ -1,0 +1,15 @@
+@model BE4_LUUTHANHQUAN.Models.User
+@{
+    ViewBag.Title = "Xóa tài khoản Admin";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="container py-3" style="max-width:650px">
+    <h2>XÓA TÀI KHOẢN ADMIN</h2>
+    <div class="alert alert-warning">Bạn có chắc chắn muốn xóa tài khoản quản trị <strong>@Model.Username</strong>?</div>
+    @using (Html.BeginForm("Delete", "Users", new { id = Model.Username }, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <button class="btn btn-danger" type="submit">Xác nhận xóa</button>
+        @Html.ActionLink("Hủy", "Index", null, new { @class = "btn btn-outline-secondary ms-2" })
+    }
+</div>

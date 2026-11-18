@@ -1,0 +1,13 @@
+@{
+    ViewBag.Title = "Thanh toán chưa hoàn tất";
+}
+
+<div class="container py-5">
+    <div class="alert alert-warning shadow-sm" role="alert">
+        <h2 class="h4 mb-3">Thanh toán chưa hoàn tất</h2>
+        <p class="mb-2">Giao dịch PayPal chưa được xác nhận hoặc đã xảy ra lỗi trong quá trình xử lý.</p>
+        <p class="mb-0">Đơn hàng chưa được tạo. Giỏ hàng của bạn vẫn được giữ lại để thử thanh toán lại.</p>
+    </div>
+    <a class="btn btn-primary" href="@Url.Action("Checkout", "Cart")">Quay lại thanh toán</a>
+    <a class="btn btn-outline-secondary ms-2" href="@Url.Action("Index", "Cart")">Xem giỏ hàng</a>
+</div>

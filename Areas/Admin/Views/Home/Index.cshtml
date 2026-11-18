@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-3">
+    <h2>TRANG QUẢN TRỊ</h2>
+    <p class="text-muted">Chọn nhóm chức năng cần quản lý.</p>
+    <div class="row g-3">
+        <div class="col-md-3"><a class="card card-body text-decoration-none h-100" href="@Url.Action("Index", "Categories", new { area = "Admin" })"><h5>Quản lý danh mục</h5><span>Thêm, sửa, xóa và xem danh mục</span></a></div>
+        <div class="col-md-3"><a class="card card-body text-decoration-none h-100" href="@Url.Action("Index", "Products", new { area = "Admin" })"><h5>Quản lý sản phẩm</h5><span>Danh sách, tìm kiếm và cập nhật sản phẩm</span></a></div>
+        <div class="col-md-3"><a class="card card-body text-decoration-none h-100" href="@Url.Action("Index", "Customers", new { area = "Admin" })"><h5>Quản lý khách hàng</h5><span>Tra cứu thông tin khách hàng</span></a></div>
+        <div class="col-md-3"><a class="card card-body text-decoration-none h-100" href="@Url.Action("Index", "Orders", new { area = "Admin" })"><h5>Quản lý đơn hàng</h5><span>Theo dõi và cập nhật trạng thái đơn</span></a></div>
+    </div>
+</div>
+

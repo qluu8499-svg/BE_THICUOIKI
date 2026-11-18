@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - QUẢN TRỊ WEBSITE</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid px-4">
+            @Html.ActionLink("BE4 ADMIN", "Index", "Home", new { area = "Admin" }, new { @class = "navbar-brand fw-bold" })
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="adminNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">@Html.ActionLink("Tổng quan", "Index", "Home", new { area = "Admin" }, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Danh mục", "Index", "Categories", new { area = "Admin" }, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Sản phẩm", "Index", "Products", new { area = "Admin" }, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Đơn hàng", "Index", "Orders", new { area = "Admin" }, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Khách hàng", "Index", "Customers", new { area = "Admin" }, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Tài khoản Admin", "Index", "Users", new { area = "Admin" }, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Website", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                </ul>
+                <span class="navbar-text text-light me-3">@User.Identity.Name</span>
+                @using (Html.BeginForm("Logout", "Account", new { area = "" }, FormMethod.Post, new { @class = "d-inline" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-outline-light btn-sm">Đăng xuất</button>
+                }
+            </div>
+        </div>
+    </nav>
+    <main class="container-fluid py-3">@RenderBody()</main>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

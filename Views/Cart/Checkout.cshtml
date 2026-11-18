@@ -1,0 +1,64 @@
+﻿@model BE4_LUUTHANHQUAN.Models.ViewModel.CheckoutVM
+@{
+    ViewBag.Title = "Thông tin giao hàng";
+}
+<div class="container py-4">
+    <div class="card border-0 shadow-sm mx-auto" style="max-width:700px;">
+        <div class="card-body p-4">
+            <h2 class="fw-bold mb-4">Thông tin giao hàng</h2>
+            @if (TempData["Message"] != null) { <div class="alert alert-warning">@TempData["Message"]</div> }
+            @using (Html.BeginForm("Checkout", "Cart", FormMethod.Post)) {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.CustomerName, "Họ và tên", new { @class = "form-label fw-semibold" })
+                    @Html.TextBoxFor(m => m.CustomerName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.CustomerName, "", new { @class = "text-danger small" })
+                </div>
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.CustomerPhone, "Số điện thoại", new { @class = "form-label fw-semibold" })
+                    @Html.TextBoxFor(m => m.CustomerPhone, new { @class = "form-control", type = "tel" })
+                    @Html.ValidationMessageFor(m => m.CustomerPhone, "", new { @class = "text-danger small" })
+                </div>
+                <div class="mb-4">
+                    @Html.LabelFor(m => m.AddressDelivery, "Địa chỉ giao hàng", new { @class = "form-label fw-semibold" })
+                    @Html.TextAreaFor(m => m.AddressDelivery, new { @class = "form-control", rows = 3 })
+                    @Html.ValidationMessageFor(m => m.AddressDelivery, "", new { @class = "text-danger small" })
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Phương thức giao hàng</label>
+                    <div class="form-check border rounded p-3 ps-5 mb-2">
+                        @Html.RadioButtonFor(m => m.ShippingMethod, "Standard", new { @class = "form-check-input", id = "shipStandard" })
+                        <label class="form-check-label" for="shipStandard">
+                            <strong>Giao hàng tiêu chuẩn</strong> - 25.000đ
+                            <div class="text-muted small">Dự kiến nhận hàng sau 3-5 ngày</div>
+                        </label>
+                    </div>
+                    <div class="form-check border rounded p-3 ps-5">
+                        @Html.RadioButtonFor(m => m.ShippingMethod, "Express", new { @class = "form-check-input", id = "shipExpress" })
+                        <label class="form-check-label" for="shipExpress">
+                            <strong>Giao hàng nhanh</strong> - 40.000đ
+                            <div class="text-muted small">Dự kiến nhận hàng sau 1-2 ngày</div>
+                        </label>
+                    </div>
+                    @Html.ValidationMessageFor(m => m.ShippingMethod, "", new { @class = "text-danger small" })
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Phương thức thanh toán</label>
+                    <div class="form-check">
+                        @Html.RadioButtonFor(m => m.PaymentMethod, "COD", new { @class = "form-check-input", id = "payCOD" })
+                        <label class="form-check-label" for="payCOD">Thanh toán khi nhận hàng (COD)</label>
+                    </div>
+                    <div class="form-check">
+                        @Html.RadioButtonFor(m => m.PaymentMethod, "PayPal", new { @class = "form-check-input", id = "payPayPal" })
+                        <label class="form-check-label" for="payPayPal">Thanh toán trực tuyến bằng PayPal</label>
+                    </div>
+                    @Html.ValidationMessageFor(m => m.PaymentMethod, "", new { @class = "text-danger small" })
+                    <div class="form-text">Thanh toán PayPal sẽ chuyển bạn đến trang PayPal để xác nhận giao dịch.</div>
+                </div>
+                <button type="submit" class="btn btn-primary">Xác nhận đặt hàng</button>
+                @Html.ActionLink("Quay lại giỏ hàng", "Index", "Cart", null, new { @class = "btn btn-outline-secondary ms-2" })
+            }
+        </div>
+    </div>
+</div>

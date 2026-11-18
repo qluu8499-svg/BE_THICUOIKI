@@ -1,0 +1,24 @@
+@model IEnumerable<BE4_LUUTHANHQUAN.Models.Order>
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">Khách hàng chưa có đơn hàng.</div>
+}
+else
+{
+    <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light"><tr><th>Mã đơn</th><th>Ngày đặt</th><th>Địa chỉ giao</th><th>Trạng thái</th><th class="text-end">Tổng tiền</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>#@order.OrderID</td><td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                <td>@order.AddressDelivery</td><td>@order.PaymentStatus</td>
+                <td class="text-end">@order.TotalAmount.ToString("N0") đ</td>
+                <td>@Html.ActionLink("Xem hóa đơn", "Details", "Orders", new { area = "Admin", id = order.OrderID }, new { @class = "btn btn-sm btn-outline-primary" })</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    </div>
+}

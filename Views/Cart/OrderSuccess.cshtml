@@ -1,0 +1,33 @@
+﻿@model BE4_LUUTHANHQUAN.Models.Order
+@{
+    ViewBag.Title = "Đặt hàng thành công";
+}
+<div class="container py-5">
+    <div class="card border-0 shadow-sm mx-auto" style="max-width:700px;">
+        <div class="card-body text-center p-4 p-md-5">
+            <div class="display-4 text-success mb-3">✓</div>
+            <h2 class="text-success fw-bold">Đặt hàng thành công!</h2>
+            <p class="text-muted">Cảm ơn bạn đã mua sắm tại BE4.</p>
+            <hr />
+            <p>Mã đơn hàng: <strong>#@Model.OrderID</strong></p>
+            <p>Ngày đặt: @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+            <p>Phương thức giao hàng: <strong>@(Model.ShippingMethod == "Express" ? "Giao hàng nhanh" : "Giao hàng tiêu chuẩn")</strong></p>
+            <p>Phí giao hàng: <strong>@Model.ShippingFee.ToString("N0") đ</strong></p>
+            <p>Tổng tiền: <strong class="text-danger">@Model.TotalAmount.ToString("N0") đ</strong></p>
+            <p>Địa chỉ giao hàng: @Model.AddressDelivery</p>
+            <hr />
+            <h5 class="text-start">Chi tiết đơn hàng</h5>
+            <div class="text-start">
+                @foreach (var item in Model.OrderDetails)
+                {
+                    <div class="d-flex justify-content-between border-bottom py-2">
+                        <span>@(item.Product == null ? "Sản phẩm" : item.Product.ProductName) × @item.Quantity</span>
+                        <strong>@String.Format("{0:N0} đ", item.UnitPrice * item.Quantity)</strong>
+                    </div>
+                }
+            </div>
+            @Html.ActionLink("Xem lịch sử mua hàng", "Index", "Orders", null, new { @class = "btn btn-outline-primary mt-3" })
+            @Html.ActionLink("Tiếp tục mua sắm", "Index", "Home", null, new { @class = "btn btn-primary mt-3" })
+        </div>
+    </div>
+</div>

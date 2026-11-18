@@ -1,0 +1,25 @@
+@model BE4_LUUTHANHQUAN.Models.Order
+@{
+    ViewBag.Title = "Chi tiết đơn hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container py-4" style="max-width:900px">
+    <p>@Html.ActionLink("← Quay lại đơn hàng", "Index")</p>
+    <h2>Chi tiết đơn hàng #@Model.OrderID</h2>
+    <div class="card card-body my-3">
+        <div><b>Trạng thái:</b> @Model.PaymentStatus</div>
+        <div><b>Ngày đặt:</b> @Model.OrderDate.ToString("dd/MM/yyyy")</div>
+        <div><b>Địa chỉ nhận:</b> @Model.AddressDelivery</div>
+    </div>
+    <div class="card card-body">
+        <h5>Sản phẩm</h5>
+        @foreach (var line in Model.OrderDetails)
+        {
+            <div class="d-flex justify-content-between border-bottom py-3">
+                <span>@(line.Product == null ? "Sản phẩm" : line.Product.ProductName) × @line.Quantity</span>
+                <b>@String.Format("{0:N0} đ", line.UnitPrice * line.Quantity)</b>
+            </div>
+        }
+        <h5 class="text-end mt-3">Tổng tiền: @String.Format("{0:N0} đ", Model.TotalAmount)</h5>
+    </div>
+</div>

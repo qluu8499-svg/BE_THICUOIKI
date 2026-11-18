@@ -1,0 +1,29 @@
+@model IEnumerable<BE4_LUUTHANHQUAN.Models.User>
+@{
+    ViewBag.Title = "Quản lý tài khoản Admin";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="container-fluid py-3">
+    <h2>QUẢN LÝ TÀI KHOẢN ADMIN</h2>
+    @if (TempData["AdminUserMessage"] != null) { <div class="alert alert-success">@TempData["AdminUserMessage"]</div> }
+    @if (TempData["AdminUserError"] != null) { <div class="alert alert-warning">@TempData["AdminUserError"]</div> }
+    @using (Html.BeginForm("Index", "Users", FormMethod.Get, new { @class = "row g-2 mb-3" }))
+    {
+        <div class="col-md-4"><input class="form-control" name="keyword" value="@ViewBag.Keyword" placeholder="Tìm tên đăng nhập" /></div>
+        <div class="col-auto"><button class="btn btn-primary">Tìm kiếm</button></div>
+        <div class="col-auto">@Html.ActionLink("Thêm Admin", "Create", null, new { @class = "btn btn-success" })</div>
+    }
+    <div class="table-responsive"><table class="table table-striped table-bordered">
+        <thead class="table-dark"><tr><th>Tên đăng nhập</th><th>Vai trò</th><th>Thao tác</th></tr></thead>
+        <tbody>
+        @foreach (var user in Model)
+        {
+            <tr><td>@user.Username</td><td>Quản trị viên</td><td>
+                @Html.ActionLink("Đổi mật khẩu", "Edit", new { id = user.Username }, new { @class = "btn btn-sm btn-outline-primary" })
+                @Html.ActionLink("Xóa", "Delete", new { id = user.Username }, new { @class = "btn btn-sm btn-outline-danger ms-1" })
+            </td></tr>
+        }
+        @if (!Model.Any()) { <tr><td colspan="3" class="text-center">Không có tài khoản Admin phù hợp.</td></tr> }
+        </tbody>
+    </table></div>
+</div>

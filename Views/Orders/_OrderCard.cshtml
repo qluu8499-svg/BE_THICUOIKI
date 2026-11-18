@@ -1,0 +1,29 @@
+@model BE4_LUUTHANHQUAN.Models.Order
+<div class="order-card">
+    <div class="d-flex justify-content-between flex-wrap"><strong>Đơn hàng #@Model.OrderID</strong><span class="status">@Model.PaymentStatus</span></div>
+    <div class="muted mt-1">Ngày đặt: @Model.OrderDate.ToString("dd/MM/yyyy") · Giao đến: @Model.AddressDelivery</div>
+    @foreach (var line in Model.OrderDetails)
+    {
+        <div class="order-line">
+            <div><strong>@(line.Product == null ? "Sản phẩm" : line.Product.ProductName)</strong><div class="muted">Số lượng: @line.Quantity</div>@Html.ActionLink("Xem chi tiết sản phẩm", "ProductDetails", "Home", new { id = line.ProductID }, new { @class = "small" })</div>
+            <span>@String.Format("{0:N0} đ", line.UnitPrice * line.Quantity)</span>
+        </div>
+    }
+    <div class="text-end mt-3"><strong>Tổng tiền: @String.Format("{0:N0} đ", Model.TotalAmount)</strong></div>
+    <div class="order-actions">
+        @Html.ActionLink("Xem đơn hàng", "Details", new { id = Model.OrderID }, new { @class = "btn btn-outline-primary btn-sm" })
+        @using (Html.BeginForm("Reorder", "Orders", new { id = Model.OrderID }, FormMethod.Post, new { @class = "d-inline" }))
+        {
+            @Html.AntiForgeryToken()
+            <button class="btn btn-outline-success btn-sm" type="submit">Mua lại</button>
+        }
+        @if (Model.PaymentStatus == "Chờ xác nhận" || Model.PaymentStatus == "Chưa thanh toán" || Model.PaymentStatus == "Chờ thanh toán")
+        {
+            using (Html.BeginForm("Cancel", "Orders", new { id = Model.OrderID }, FormMethod.Post, new { onsubmit = "return confirm('Bạn chắc chắn muốn hủy đơn hàng này?');" }))
+            {
+                @Html.AntiForgeryToken()
+                <button class="btn btn-outline-danger btn-sm" type="submit">Hủy đơn</button>
+            }
+        }
+    </div>
+</div>

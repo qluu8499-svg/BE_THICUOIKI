@@ -1,0 +1,58 @@
+@model BE4_LUUTHANHQUAN.Models.Order
+@{
+    ViewBag.Title = "Chi tiết đơn hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    var statuses = new[] { "Chờ thanh toán", "Đang xử lý", "Đang vận chuyển", "Đã giao", "Đã hủy", "Chờ xác nhận", "Chưa thanh toán", "Đang giao" };
+}
+<div class="container py-3">
+    <p>@Html.ActionLink("← Danh sách đơn hàng", "Index")</p>
+    <h2>Đơn hàng #@Model.OrderID</h2>
+    <div class="row g-3 my-2">
+        <div class="col-md-6">
+            <div class="card card-body h-100">
+                <h5>Thông tin khách hàng</h5>
+                <p class="mb-1"><b>Họ tên:</b> @(Model.Customer == null ? "" : Model.Customer.CustomerName)</p>
+                <p class="mb-1"><b>Số điện thoại:</b> @(Model.Customer == null ? "" : Model.Customer.CustomerPhone)</p>
+                <p class="mb-1"><b>Email:</b> @(Model.Customer == null ? "" : Model.Customer.CustomerEmail)</p>
+                <p class="mb-1"><b>Địa chỉ giao:</b> @Model.AddressDelivery</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card card-body h-100">
+                <h5>Cập nhật trạng thái</h5>
+                <p><b>Ngày đặt:</b> @Model.OrderDate.ToString("dd/MM/yyyy")</p>
+                <p><b>Trạng thái hiện tại:</b> @Model.PaymentStatus</p>
+                @using (Html.BeginForm("UpdateStatus", "Orders", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", Model.OrderID)
+                    <div class="input-group">
+                        <select class="form-select" name="status">
+                            @foreach (var s in statuses)
+                            {
+                                if (Model.PaymentStatus == s) { <option value="@s" selected="selected">@s</option> }
+                                else { <option value="@s">@s</option> }
+                            }
+                        </select>
+                        <button class="btn btn-primary" type="submit">Cập nhật</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="card card-body">
+        <h5>Sản phẩm trong đơn</h5>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead><tr><th>Sản phẩm</th><th>Đơn giá</th><th>Số lượng</th><th>Thành tiền</th></tr></thead>
+                <tbody>
+                @foreach (var d in Model.OrderDetails)
+                {
+                    <tr><td>@(d.Product == null ? "Sản phẩm" : d.Product.ProductName)</td><td>@String.Format("{0:N0} đ", d.UnitPrice)</td><td>@d.Quantity</td><td>@String.Format("{0:N0} đ", d.UnitPrice * d.Quantity)</td></tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        <h4 class="text-end">Tổng tiền: @String.Format("{0:N0} đ", Model.TotalAmount)</h4>
+    </div>
+</div>

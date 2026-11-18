@@ -1,0 +1,51 @@
+@model IEnumerable<BE4_LUUTHANHQUAN.Models.Order>
+@using System.Linq
+@{
+    ViewBag.Title = "Đơn hàng của tôi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var statuses = new[] { "Chờ thanh toán", "Đang xử lý", "Đang vận chuyển", "Đã giao", "Đã hủy" };
+    var activeStatus = ViewBag.Status as string;
+    var showMore = ViewBag.ShowMore != null && (bool)ViewBag.ShowMore;
+}
+<style>
+.orders-wrap{max-width:1050px;margin:28px auto}.order-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.order-tabs a{padding:9px 14px;border:1px solid #dee2e6;border-radius:6px;color:#495057;text-decoration:none}.order-tabs a.active{background:#0d6efd;color:white;border-color:#0d6efd}.order-card{background:#fff;border:1px solid #e6e8eb;border-radius:9px;margin-bottom:16px;padding:18px}.order-line{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #eee}.order-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:14px}.status{font-weight:600;color:#0d6efd}.muted{color:#6c757d;font-size:13px}
+</style>
+<div class="orders-wrap">
+    <h2>Đơn hàng của tôi</h2><p class="text-muted">Theo dõi và quản lý các đơn hàng bạn đã đặt.</p>
+    @if (TempData["OrderMessage"] != null) { <div class="alert alert-info">@TempData["OrderMessage"]</div> }
+    <div class="order-tabs">
+        <a class="@(String.IsNullOrEmpty(activeStatus) ? "active" : "")" href="@Url.Action("Index", new { keyword = ViewBag.Keyword })">Tất cả đơn</a>
+        @foreach (var s in statuses) { <a class="@(activeStatus == s ? "active" : "")" href="@Url.Action("Index", new { status = s, keyword = ViewBag.Keyword })">@s</a> }
+    </div>
+    @using (Html.BeginForm("Index", "Orders", FormMethod.Get, new { @class = "row g-2 mb-3" }))
+    {
+        if (!String.IsNullOrEmpty(activeStatus)) { @Html.Hidden("status", activeStatus) }
+        <div class="col-md-9"><input class="form-control" name="keyword" value="@ViewBag.Keyword" placeholder="Tìm theo mã đơn hàng hoặc tên sản phẩm" /></div>
+        <div class="col-md-3"><button class="btn btn-primary w-100">Tìm đơn hàng</button></div>
+    }
+    @if (!Model.Any() && !(bool)ViewBag.HasAnyOrders)
+    {
+        <div class="alert alert-light border text-center py-5"><h5>BẠN CHƯA CÓ ĐƠN HÀNG NÀO. HÃY ĐẶT ĐƠN NGAY.</h5>@Html.ActionLink("Về trang chủ", "Index", "Home", null, new { @class = "btn btn-primary mt-2" })</div>
+    }
+    else if (!Model.Any()) { <div class="alert alert-light border text-center py-4">Không có đơn hàng phù hợp với nội dung tìm kiếm.</div> }
+    else if (!String.IsNullOrEmpty(activeStatus))
+    {
+        <h5 class="mb-3">@activeStatus</h5>
+        foreach (var order in Model) { @Html.Partial("_OrderCard", order) }
+        if (!showMore && Model.Count() == 2 && (int)ViewBag.StatusCounts[activeStatus] > 2) { <div class="text-end mb-4">@Html.ActionLink("Xem thêm", "Index", new { status = activeStatus, keyword = ViewBag.Keyword, showMore = true }, new { @class = "btn btn-outline-primary" })</div> }
+        if (showMore && Model.Count() == 50) { <p class="text-muted small">Đang hiển thị tối đa 50 đơn hàng gần nhất của trạng thái này.</p> }
+    }
+    else
+    {
+        foreach (var s in statuses)
+        {
+            var group = Model.Where(o => s == "Chờ thanh toán" ? (o.PaymentStatus == "Chờ thanh toán" || o.PaymentStatus == "Chưa thanh toán" || o.PaymentStatus == "Chờ xác nhận") : s == "Đang vận chuyển" ? (o.PaymentStatus == "Đang vận chuyển" || o.PaymentStatus == "Đang giao") : o.PaymentStatus == s).OrderByDescending(o => o.OrderDate).Take(2).ToList();
+            if (group.Any())
+            {
+                <section class="mb-4"><div class="d-flex justify-content-between align-items-center mb-2"><h5 class="mb-0">@s</h5>@if ((int)ViewBag.StatusCounts[s] > 2) { @Html.ActionLink("Xem thêm", "Index", new { status = s, keyword = ViewBag.Keyword }, new { @class = "small" }) }</div>
+                    @foreach (var order in group) { @Html.Partial("_OrderCard", order) }
+                </section>
+            }
+        }
+    }
+</div>
